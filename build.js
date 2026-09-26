@@ -2,7 +2,7 @@
 // No dependencies. Run: node build.js
 const fs = require('fs'), path = require('path');
 const ROOT = __dirname, OUT = path.join(ROOT, 'public');
-const BASE = 'https://www.iptvportuguesse.com';
+const BASE = 'https://iptvportuguese.pt';
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const jsonStr = s => JSON.stringify(s);
@@ -89,7 +89,7 @@ const staticPages = [];
 for (const f of fs.readdirSync(ROOT)) {
   if (/\.(html|svg|webp|png|jpg|ico|json|txt)$/i.test(f) && !['vercel.json', 'package.json'].includes(f)) {
     fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f));
-    if (f.endsWith('.html') && f !== '404.html') staticPages.push(f === 'index.html' ? '' : f.replace(/\.html$/, ''));
+    if (f.endsWith('.html') && f !== '404.html' && !/name="robots" content="[^"]*noindex/.test(fs.readFileSync(path.join(ROOT, f), 'utf8'))) staticPages.push(f === 'index.html' ? '' : f.replace(/\.html$/, ''));
   }
 }
 const posts = fs.readdirSync(path.join(ROOT, 'content/posts')).filter(f => f.endsWith('.md'))
@@ -107,8 +107,8 @@ const cards = posts.map(p => `    <a class="card" href="/${p.slug}">
       <div class="ctitle">${esc(p.title)}</div>
       <div class="cex">${esc(p.description.length > 170 ? p.description.slice(0, 167) + '…' : p.description)}</div>
     </a>`).join('\n');
-fs.writeFileSync(path.join(OUT, 'blog.html'), fill(fs.readFileSync(path.join(ROOT, 'templates/blog.html'), 'utf8'), { cards, count: String(posts.length) }));
-const urls = [...staticPages.map(path => ({ path })), { path: 'blog' }, ...posts.map(p => ({ path: p.slug, lastmod: p.updated }))];
+fs.writeFileSync(path.join(OUT, 'blog.html'), fill(fs.readFileSync(path.join(ROOT, 'templates/blog.html'), 'utf8'), { cards, lead: posts.length ? `${posts.length} guias práticos sobre IPTV em Portugal.` : 'Novos guias sobre IPTV em Portugal em breve.', robots: posts.length ? 'index, follow' : 'noindex, follow' }));
+const urls = [...staticPages.map(path => ({ path })), ...(posts.length ? [{ path: 'blog' }] : []), ...posts.map(p => ({ path: p.slug, lastmod: p.updated }))];
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   urls.map(u => `  <url><loc>${BASE}/${u.path}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n') + '\n</urlset>\n');
 console.log(`Built ${posts.length} articles, blog index, sitemap (${urls.length} URLs) -> public/`);

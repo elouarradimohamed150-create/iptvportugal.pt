@@ -1,6 +1,6 @@
-# IPTV Portugal — static site
+# IPTV em Portugal — iptvportuguese.pt
 
-Static site for www.iptvportuguesse.com, built with a tiny dependency-free script (`node build.js`) and deployed on Vercel.
+Static site for iptvportuguese.pt, built with a tiny dependency-free script (`node build.js`) and deployed on Vercel.
 
 ## Structure
 - `content/posts/*.md` — the 41 blog articles as Markdown (file name = URL slug)
@@ -18,7 +18,7 @@ title: "Article title"
 description: "One or two sentences for Google (max ~155 characters)"
 date: "2026-09-26"
 updated: "2026-09-26"   # optional; shown as "Atualizado em" and used for sitemap lastmod
-category: "Guia · IPTV Portugal"
+category: "Guia · IPTV em Portugal"
 ---
 
 ## First heading
@@ -34,3 +34,8 @@ Link to other articles as `/slug`. Commit and push — Vercel rebuilds automatic
 node build.js
 npx serve public   # or any static server
 ```
+
+## Status
+- Main keyword: **iptv em portugal**; secondary: iptv português, iptv portugal, portuguese iptv.
+- Derived from the iptvportuguesse.com template. Its 41 articles were NOT copied (duplicate content).
+- `iptv-setup` and `canais` are noindex until their text is rewritten; the blog is noindex until it has posts.
